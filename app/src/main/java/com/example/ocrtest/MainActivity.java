@@ -159,9 +159,124 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void processImage(Bitmap bitmap) {
-        String result = "";
         mTess.setImage(bitmap);
-        result = mTess.getUTF8Text();
-        Log.v("RESULT: ", result);
+        String result = mTess.getUTF8Text();
+        result = result.replace("05", "a");
+        result = result.replace(" ", "");
+        result = result.trim();
+        Log.v("Result", result);
+        if (String.valueOf(result.charAt(0)).equals("a")) {
+            getRoutingNumber(result);
+            getAccountNumber(result);
+        } else if (String.valueOf(result.charAt(0)).equals("c")) {
+            getTransitNumber(result);
+            getFinancialInstitutionNumber(result);
+            getCanadianAccountNumber(result);
+        }
+        Log.v("Result", result);
+    }
+
+    private String getRoutingNumber(String fullNumber) {
+        char[] characters = fullNumber.toCharArray();
+        String routingNumber = "";
+        int count_a = 0;
+        for (int index = 0; index < characters.length; index++) {
+            String character = String.valueOf(characters[index]);
+            if (character.equals("a")) {
+                count_a++;
+            }
+            if (count_a < 2) {
+                routingNumber += character;
+            }
+        }
+        routingNumber = routingNumber.replace("a", "");
+        Log.v("ROUTING", routingNumber);
+        return routingNumber;
+    }
+
+    private String getAccountNumber(String fullNumber) {
+        char[] characters = fullNumber.toCharArray();
+        String accountNumber = "";
+        int count_a = 0, count_c = 0;
+        for (int index = 0; index < characters.length; index++) {
+            String character = String.valueOf(characters[index]);
+            if (character.equals("a")) {
+                count_a++;
+            }
+            if (character.equals("c")) {
+                count_c++;
+            }
+            if (count_a == 2 && count_c < 1) {
+                accountNumber += character;
+            }
+        }
+        accountNumber = accountNumber.replace("a", "");
+        Log.v("ACCOUNT", accountNumber);
+        return accountNumber;
+    }
+
+    private String getTransitNumber(String fullNumber) {
+        char[] characters = fullNumber.toCharArray();
+        String transitNumber = "";
+        int count_a = 0, count_d = 0;
+        for (int index = 0; index < characters.length; index++) {
+            String character = String.valueOf(characters[index]);
+            if (character.equals("a")) {
+                count_a++;
+            }
+            if (character.equals("d")) {
+                count_d++;
+            }
+            if (count_a == 1 && count_d < 1) {
+                transitNumber += character;
+            }
+        }
+        transitNumber = transitNumber.replace("a", "");
+        Log.v("TRANSIT", transitNumber);
+        return transitNumber;
+    }
+
+    private String getFinancialInstitutionNumber(String fullNumber) {
+        char[] characters = fullNumber.toCharArray();
+        String financialInstitution = "";
+        int count_a = 0, count_d = 0;
+        for (int index = 0; index < characters.length; index++) {
+            String character = String.valueOf(characters[index]);
+            if (character.equals("a")) {
+                count_a++;
+            }
+            if (character.equals("d")) {
+                count_d++;
+            }
+            if (count_a < 2 && count_d == 1) {
+                financialInstitution += character;
+            }
+        }
+        financialInstitution = financialInstitution.replace("d", "");
+        financialInstitution = financialInstitution.replace("c", "");
+        Log.v("FINANCIAL INSTITUTION", financialInstitution);
+        return financialInstitution;
+    }
+
+    private String getCanadianAccountNumber(String fullNumber) {
+        char[] characters = fullNumber.toCharArray();
+        String accountNumber = "";
+        int count_a = 0, count_c = 0;
+        for (int index = 0; index < characters.length; index++) {
+            String character = String.valueOf(characters[index]);
+            if (character.equals("a")) {
+                count_a++;
+            }
+            if (character.equals("c")) {
+                count_c++;
+            }
+            if (count_a == 2 && count_c < 3) {
+                accountNumber += character;
+            }
+        }
+        accountNumber = accountNumber.replace("a", "");
+        accountNumber = accountNumber.replace("d", "");
+        Log.v("ACCOUNT", accountNumber);
+        return accountNumber;
     }
 }

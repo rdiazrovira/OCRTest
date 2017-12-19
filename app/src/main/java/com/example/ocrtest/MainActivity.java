@@ -78,34 +78,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getDrawableId(String name) {
-        switch (name) {
-            case "abecedario":
-                return R.drawable.abecedario;
-            case "cg_check":
-                return R.drawable.cg_check;
-            case "cp_check":
-                return R.drawable.cp_check;
-            case "micrb":
-                return R.drawable.micrb;
-            case "micrg":
-                return R.drawable.micrg;
-            case "uw_check":
-                return R.drawable.uw_check;
-            case "ub_check":
-                return R.drawable.ub_check;
-        }
-        return R.drawable.abecedario;
+        return getResources().getIdentifier(name, "drawable", getPackageName());
     }
 
     private ArrayAdapter<String> getNamesOfTheImages() {
         ArrayList<String> names = new ArrayList<>();
-        names.add(getResources().getResourceEntryName(R.drawable.abecedario));
-        names.add(getResources().getResourceEntryName(R.drawable.cg_check));
-        names.add(getResources().getResourceEntryName(R.drawable.cp_check));
-        names.add(getResources().getResourceEntryName(R.drawable.micrb));
-        names.add(getResources().getResourceEntryName(R.drawable.micrg));
-        names.add(getResources().getResourceEntryName(R.drawable.uw_check));
-        names.add(getResources().getResourceEntryName(R.drawable.ub_check));
+        for (int i = 1; i <= 4; i++) {
+            int id = getResources().getIdentifier("micr_" + i, "drawable",
+                    getPackageName());
+            names.add(getResources().getResourceEntryName(id));
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(),
                 android.R.layout.simple_spinner_item, names);
@@ -161,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
     public void processImage(Bitmap bitmap) {
         mTess.setImage(bitmap);
         String result = mTess.getUTF8Text();
-        result = result.replace("05", "a");
         result = result.replace(" ", "");
+        result = result.replace("\n", "");
         result = result.trim();
         Log.v("Result", result);
         if (String.valueOf(result.charAt(0)).equals("a")) {
@@ -173,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
             getFinancialInstitutionNumber(result);
             getCanadianAccountNumber(result);
         }
-        Log.v("Result", result);
     }
 
     private String getRoutingNumber(String fullNumber) {
